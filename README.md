@@ -217,6 +217,38 @@ Returns price series for sparkline generation
 - **Dependency Scanning** - Automated security reviews
 - **HTTPS Only** - Production security requirements
 
+## 📊 Data Sources
+
+### S&P 500 Universe Dataset
+
+The application uses a deterministic S&P 500 stock universe from a curated dataset:
+
+- **Source**: [GitHub datasets/s-and-p-500-companies](https://github.com/datasets/s-and-p-500-companies)
+- **Origin**: Extracted from Wikipedia's S&P 500 companies list
+- **Snapshot Date**: August 2024
+- **Format**: CSV with ticker, name, and sector columns
+- **Count**: 503 companies (within acceptable range of 500±10)
+
+#### Data Validation
+- ✅ **Ticker Format**: Validates against `^[A-Z]{1,5}(\.[A-Z])?$` pattern
+- ✅ **Completeness**: All required fields (ticker, name, sector) present
+- ✅ **Uniqueness**: No duplicate ticker symbols
+- ✅ **Count Range**: Stock count within 490-510 range
+- ✅ **Schema Validation**: Proper CSV headers and structure
+
+#### Usage Example
+```python
+from data.sp500_loader import load_sp500_universe, get_sp500_tickers
+
+# Load all S&P 500 stocks
+stocks = load_sp500_universe()
+print(f"Loaded {len(stocks)} stocks")
+
+# Get just the ticker symbols
+tickers = get_sp500_tickers()
+print(f"Tickers: {tickers[:5]}")  # ['MMM', 'AOS', 'ABT', 'ABBV', 'ACN']
+```
+
 ## 📁 Project Structure
 
 ```
@@ -227,8 +259,11 @@ top5-sharpe/
 │   └── policies.md         # Development policies
 ├── backend/                 # FastAPI application (planned)
 ├── frontend/               # UI components (planned)
-├── data/                   # S&P 500 universe data (planned)
-├── tests/                  # Test suites (planned)
+├── data/                   # S&P 500 universe data
+│   ├── sp500.csv           # S&P 500 constituents snapshot
+│   └── sp500_loader.py     # Data loader module
+├── tests/                  # Test suites
+│   └── test_sp500_loader.py    # S&P 500 loader unit tests
 ├── docker-compose.yml      # Container orchestration (planned)
 ├── Dockerfile             # Container definition (planned)
 ├── Makefile              # Development commands (planned)
@@ -244,7 +279,8 @@ top5-sharpe/
 - [x] Project structure and documentation
 - [x] Kanban task breakdown
 - [x] GitHub repository setup
-- [ ] Core data structures and models
+- [x] S&P 500 universe data and loader
+- [ ] Core API data models
 
 ### Phase 2: Backend Development
 - [ ] FastAPI application scaffold
